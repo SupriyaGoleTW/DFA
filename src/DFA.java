@@ -8,28 +8,31 @@ import java.util.Set;
 
 public class DFA {
 
-    private HashMap<String, HashMap<String, State>> transitions;
-    private final State initialState;
-    private final Set<State> finalStates;
-    TransitionTable transition = new TransitionTable();
+    private HashMap<String, HashMap<String, String>> transitions;
+    private final String initialState;
+    private final Set<String> finalStates;
 
-    public DFA(HashMap<String, HashMap<String, State>> transitions, State initialState, Set<State> finalStates) {
+    public DFA(HashMap<String, HashMap<String, String>> transitions, String initialState, Set<String> finalStates) {
         this.transitions = transitions;
         this.initialState = initialState;
         this.finalStates = finalStates;
     }
 
-    public boolean isInputValueReachedToFinalState(String value) {
+    public boolean isInputValueReachedToFinalState(String value) { // todo
         String[] character = value.split("");
-        State currentState = initialState;
+        String currentState = initialState;
         for(int index=0;index<character.length;index++){
             String letter = character[index];
-            currentState = transition.getNextState(this.transitions, currentState,letter);
+            currentState = getNextState(currentState,letter);
         }
         return isMachineInAFinalState(currentState);
     }
 
-    private boolean isMachineInAFinalState(State state) {
+    private boolean isMachineInAFinalState(String state) {
         return finalStates.contains(state);
+    }
+
+    private String getNextState(String currentState, String letter){
+        return transitions.get(currentState).get(letter);
     }
 }
