@@ -1,48 +1,69 @@
+import Automata.DFA;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 
 public class DFA_test {
     DFA dfa;
+
+    private HashMap<String, String> createTransition(String alphabet, String possibleReach) {
+        HashMap<String, String> transition = new HashMap<>();
+        transition.put(alphabet, possibleReach);
+        return transition;
+    }
+
+    private HashMap<String, HashMap<String, String>> addToTransitionTable(HashMap<String, HashMap<String, String>> transitions, HashMap<String, String> transition, String symbol, String destString, String sourceState) {
+        if (transitions.containsKey(sourceState)) {
+            transitions.get(sourceState).put(symbol, destString);
+        } else
+            transitions.put(sourceState, transition);
+        return transitions;
+    }
+
     @Before
-    public void before(){
-        State initialState = new State("q1");
-
-        // set of states
-        State q1 = new State("q1");
-        State q2 = new State("q2");
-
-        //set of alphabets
+    public void before() {
+        String initialState = "q1";
         String alphabet1 = "A";
         String alphabet2 = "B";
+        String firstState = "q1";
+        String secondState = "q2";
 
-        //set of final states
-        Set<State> finalStates = new HashSet<>();
-        finalStates.add(q2);
+        ArrayList<String> finalStates = new ArrayList<>();
+        finalStates.add("q2");
 
-        // transition table
-        TransitionTable transitionTable = new TransitionTable();
-        transitionTable.addTransitions(q1, alphabet1, q2);
-        transitionTable.addTransitions(q1, alphabet2, q2);
-        transitionTable.addTransitions(q2, alphabet1, q1);
-        HashMap<String, HashMap<String, State>> transitions = transitionTable.addTransitions(q2, alphabet2, q2);
+        HashMap<String, HashMap<String, String>> transitions = new HashMap<>();
+
+        HashMap<String, String> firstTransition = createTransition(alphabet1, firstState);
+
+        transitions = addToTransitionTable(transitions, firstTransition, alphabet1, firstState, firstState);
+
+
+        HashMap<String, String> secondTransition = createTransition(alphabet2, secondState);
+        transitions = addToTransitionTable(transitions, secondTransition, alphabet2, secondState, firstState);
+
+        //transition from state2
+        HashMap<String, String> thirdTransition = createTransition(alphabet1, firstState);
+        transitions = addToTransitionTable(transitions, thirdTransition, alphabet1, firstState, secondState);
+
+        HashMap<String, String> fourthTransition = createTransition(alphabet2, secondState);
+        transitions = addToTransitionTable(transitions, fourthTransition, alphabet2, secondState, secondState);
 
         dfa = new DFA(transitions, initialState, finalStates);
     }
 
     @Test
-    public void shouldPassStringEndingWithB(){
+    public void should_pass_string_ending_with_B() {
         boolean result = dfa.isInputValueReachedToFinalState("ABAB");
-        assertEquals(result,true);
+        assertEquals(result, true);
     }
 
     @Test
-    public void shouldNotPassStringEndingWithA(){
+    public void should_not_pass_string_ending_with_A() {
         boolean result = dfa.isInputValueReachedToFinalState("ABABA");
-        assertEquals(result,false);
+        assertEquals(result, false);
     }
 }

@@ -1,0 +1,9 @@
+Goal:- Parsing data read from file
+
+Read file data as string -  done
+remove unnecessary \ -  done
+convert into json array -  done
+Now we have array of objects - done
+run through each object and create corresponding Automata.Automata or NFA - done
+3 layers Main -> Automata.Automata input parser -> actual Automata.Automata generator - done
+After generating Automata.Automata validate it through pass cases and fail cases to see weather it satisfies criteria

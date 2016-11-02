@@ -1,18 +1,18 @@
-/*
+package Automata;/*
  Role of class:-
     this class will say weather string has successfully met all required criteria.
 */
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class DFA {
 
     private HashMap<String, HashMap<String, String>> transitions;
     private final String initialState;
-    private final Set<String> finalStates;
+    private final ArrayList<String> finalStates;
 
-    public DFA(HashMap<String, HashMap<String, String>> transitions, String initialState, Set<String> finalStates) {
+    public DFA(HashMap<String, HashMap<String, String>> transitions, String initialState, ArrayList<String> finalStates) {
         this.transitions = transitions;
         this.initialState = initialState;
         this.finalStates = finalStates;
