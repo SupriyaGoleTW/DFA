@@ -1,14 +1,15 @@
 package parser;
 
+import Objects.State;
+import Objects.States;
+import Objects.Transitions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 public class InputParser {
-    private static Object passCases;
 
     public static String parseInput(String criterias) {
         if (criterias.startsWith("\"") && criterias.endsWith("\""))
@@ -16,13 +17,13 @@ public class InputParser {
         return criterias.replace("\\", "");
     }
 
-    public static ArrayList<String> getFinalStates(JSONArray finalStates) {
-        ArrayList<String> allFinalStates = new ArrayList<>();
+    public static States getFinalStates(JSONArray finalStates) {
+        States states = new States();
         for (int index = 0; index < finalStates.length(); index++) {
-            String state = (String) finalStates.get(index);
-            allFinalStates.add(state);
+            State state = new State((String) finalStates.get(index));
+            states.add(state);
         }
-        return allFinalStates;
+        return states;
     }
 
     public static ArrayList<String> getAlphabets(JSONArray alphabets) {
@@ -33,36 +34,31 @@ public class InputParser {
         return allAlphabets;
     }
 
-    public static HashMap<String, HashMap<String, String>> createTransitionTable(JSONObject delta) {
+    public static Transitions createTransitionTable(JSONObject delta) {
         Iterator keys = delta.keys();
-        HashMap<String, HashMap<String, String>> allTransitions = new HashMap<>();
+        Transitions transitions = new Transitions();
         while (keys.hasNext()) {
-            Object state = keys.next();
+            State state = new State((String) keys.next());
             String transition = delta.get(state.toString()).toString();
-            HashMap<String, String> aTransition = crateATransition(transition);
-            allTransitions.put(state.toString(), aTransition);
+            addATransition(state, transition,transitions);
         }
-        return allTransitions;
+        return transitions;
     }
 
-    private static HashMap<String, String> crateATransition(String transition) {
-        HashMap<String, String> transitionsMap = new HashMap<>();
-        String[] waysForAlphabet = transition.split(",");
-        for (int index = 0; index < waysForAlphabet.length; index++) {
-            String transition1 = waysForAlphabet[index].replace("{", "").replace("}", "").replace("\"", "");
+    private static void addATransition(State state, String transition, Transitions transitions) {
+        String[] splittedTransition = transition.split(",");
+        for (String aWaysForAlphabet : splittedTransition) {
+            String transition1 = aWaysForAlphabet.replace("{", "").replace("}", "").replace("\"", "");
             String[] letterAndState = transition1.split(":");
-            transitionsMap.put(letterAndState[0], letterAndState[1]);
+            transitions.add(state, letterAndState[0], new State(letterAndState[1]));
         }
-        return transitionsMap;
     }
 
     public static JSONArray getPassCases(JSONObject dfaMachineInfo) {
-        JSONArray pass_cases = dfaMachineInfo.getJSONArray("pass-cases");
-        return pass_cases;
+        return dfaMachineInfo.getJSONArray("pass-cases");
     }
 
     public static JSONArray getFailCases(JSONObject dfaMachineInfo) {
-        JSONArray fail_cases = dfaMachineInfo.getJSONArray("fail-cases");
-        return fail_cases;
+        return dfaMachineInfo.getJSONArray("fail-cases");
     }
 }

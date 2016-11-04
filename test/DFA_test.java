@@ -1,56 +1,33 @@
 import Automata.DFA;
+import Objects.State;
+import Objects.States;
+import Objects.Transitions;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 
 public class DFA_test {
     DFA dfa;
 
-    private HashMap<String, String> createTransition(String alphabet, String possibleReach) {
-        HashMap<String, String> transition = new HashMap<>();
-        transition.put(alphabet, possibleReach);
-        return transition;
-    }
-
-    private HashMap<String, HashMap<String, String>> addToTransitionTable(HashMap<String, HashMap<String, String>> transitions, HashMap<String, String> transition, String symbol, String destString, String sourceState) {
-        if (transitions.containsKey(sourceState)) {
-            transitions.get(sourceState).put(symbol, destString);
-        } else
-            transitions.put(sourceState, transition);
-        return transitions;
-    }
-
     @Before
     public void before() {
-        String initialState = "q1";
+        State initialState = new State("q1");
+
         String alphabet1 = "A";
         String alphabet2 = "B";
-        String firstState = "q1";
-        String secondState = "q2";
 
-        ArrayList<String> finalStates = new ArrayList<>();
-        finalStates.add("q2");
+        State firstState = new State("q1");
+        State secondState = new State("q2");
 
-        HashMap<String, HashMap<String, String>> transitions = new HashMap<>();
+        States finalStates = new States();
+        finalStates.add(secondState);
 
-        HashMap<String, String> firstTransition = createTransition(alphabet1, firstState);
-
-        transitions = addToTransitionTable(transitions, firstTransition, alphabet1, firstState, firstState);
-
-
-        HashMap<String, String> secondTransition = createTransition(alphabet2, secondState);
-        transitions = addToTransitionTable(transitions, secondTransition, alphabet2, secondState, firstState);
-
-        //transition from state2
-        HashMap<String, String> thirdTransition = createTransition(alphabet1, firstState);
-        transitions = addToTransitionTable(transitions, thirdTransition, alphabet1, firstState, secondState);
-
-        HashMap<String, String> fourthTransition = createTransition(alphabet2, secondState);
-        transitions = addToTransitionTable(transitions, fourthTransition, alphabet2, secondState, secondState);
+        Transitions transitions = new Transitions();
+        transitions.add(firstState,alphabet1,firstState);
+        transitions.add(firstState,alphabet2,secondState);
+        transitions.add(secondState,alphabet2,secondState);
+        transitions.add(secondState,alphabet1,firstState);
 
         dfa = new DFA(transitions, initialState, finalStates);
     }

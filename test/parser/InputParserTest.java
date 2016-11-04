@@ -1,5 +1,6 @@
 package parser;
 
+import Objects.States;
 import org.json.JSONArray;
 import org.junit.Test;
 
@@ -21,10 +22,10 @@ public class InputParserTest {
     public void should_convert_json_array_of_states_to_list_of_final_states() {
         JSONArray objects = new JSONArray();
         JSONArray finalStateAsJsonArray = objects.put("q2");
-        ArrayList<String> finalStates = InputParser.getFinalStates(finalStateAsJsonArray);
-        ArrayList<Object> expectedArrayList = new ArrayList<>();
+        States finalStates = InputParser.getFinalStates(finalStateAsJsonArray);
+        States expectedStates = new States();
         JSONArray unexpectedJsonArray = new JSONArray();
-        assertEquals(finalStates.getClass(),expectedArrayList.getClass());
+        assertEquals(finalStates.getClass(),expectedStates.getClass());
         assertNotEquals(finalStates.getClass(),unexpectedJsonArray.getClass());
     }
 

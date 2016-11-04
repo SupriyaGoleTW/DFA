@@ -3,24 +3,25 @@ package Automata;/*
     this class will say weather string has successfully met all required criteria.
 */
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import Objects.State;
+import Objects.States;
+import Objects.Transitions;
 
 public class DFA {
 
-    private HashMap<String, HashMap<String, String>> transitions;
-    private final String initialState;
-    private final ArrayList<String> finalStates;
+    private Transitions transitions;
+    private final State initialState;
+    private final States finalStates;
 
-    public DFA(HashMap<String, HashMap<String, String>> transitions, String initialState, ArrayList<String> finalStates) {
+    public DFA(Transitions transitions, State initialState, States finalStates) {
         this.transitions = transitions;
         this.initialState = initialState;
         this.finalStates = finalStates;
     }
 
-    public boolean isInputValueReachedToFinalState(String value) { // todo
+    public boolean isInputValueReachedToFinalState(String value) {
         String[] character = value.split("");
-        String currentState = initialState;
+        State currentState = initialState;
         for(int index=0;index<character.length;index++){
             String letter = character[index];
             currentState = getNextState(currentState,letter);
@@ -28,11 +29,11 @@ public class DFA {
         return isMachineInAFinalState(currentState);
     }
 
-    private boolean isMachineInAFinalState(String state) {
+    private boolean isMachineInAFinalState(State state) {
         return finalStates.contains(state);
     }
 
-    private String getNextState(String currentState, String letter){
-        return transitions.get(currentState).get(letter);
+    private State getNextState(State currentState, String letter){
+        return transitions.transit(currentState,letter);
     }
 }
